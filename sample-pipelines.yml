@@ -27,7 +27,7 @@ stages:
         versionSpec: '16.x'
     - script: npm ci
       displayName: NPM Install
-    - script: node test/pipeline_filter/main.mjs
+    - script: node src/main.mjs
       env:
         FILTER_GITHUBPAT: $(filter.githubPAT)
       name: execution
