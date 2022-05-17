@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Qinzheng Sun <qinsu@microsoft.com>",
   "bin": "src/main.mjs",
-  "repository": "github:microsoft/AzurePipelineFilter",
+  "repository": "github:microsoft/azure-pipeline-filter",
   "engines": {
     "node": ">=13.2.0"
   },

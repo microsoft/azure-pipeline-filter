@@ -5,7 +5,7 @@ resources:
   repositories:
     - repository: azpfilter
       type: github
-      name: microsoft/AzurePipelineFilter
+      name: microsoft/azure-pipeline-filter
       endpoint: githubConnection
 
 pool:
