@@ -5,7 +5,7 @@ resources:
   repositories:
     - repository: azpfilter
       type: github
-      name: microsoft/AzurePipelineFilter
+      name: microsoft/azure-pipeline-filter
       endpoint: githubConnection
 
 pool:
@@ -21,19 +21,19 @@ stages:
   jobs:
   - job: Check
     steps:
-    - checkout: test
+    - checkout: azpfilter
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
     - script: npm ci
       displayName: NPM Install
-    - script: node test/pipeline_filter/main.mjs
+    - script: node src/main.mjs
       env:
         FILTER_GITHUBPAT: $(filter.githubPAT)
       name: execution
       displayName: Execution
 - stage: Main
-  dependsOn: Check
+  dependsOn: Filter
   # dependencies.$(StageName).outputs['$(JobName).$(TaskName).$(VariableName)']
   condition: and(succeeded(), ne(dependencies.Filter.outputs['Check.execution.skipsubsequent'], 'true'))
   jobs:
