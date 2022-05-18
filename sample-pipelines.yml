@@ -33,7 +33,7 @@ stages:
       name: execution
       displayName: Execution
 - stage: Main
-  dependsOn: Check
+  dependsOn: Filter
   # dependencies.$(StageName).outputs['$(JobName).$(TaskName).$(VariableName)']
   condition: and(succeeded(), ne(dependencies.Filter.outputs['Check.execution.skipsubsequent'], 'true'))
   jobs:
