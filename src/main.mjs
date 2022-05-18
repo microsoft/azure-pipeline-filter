@@ -1,5 +1,4 @@
 import got from 'got'
-import simpleGit from 'simple-git'
 import multimatch from 'multimatch'
 
 import { parsePullRequstBody } from './parsePullRequestBody.mjs'
@@ -23,9 +22,19 @@ const getPipelineVar = (pipelineVar) => {
 const getGithubPullRequestInfo = async () => {
   const repoId = process.env.BUILD_REPOSITORY_ID
   const prNumber = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
-  const githubPAT = getPipelineVar(VARIABLES.githubPAT)
-
   const prUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}`
+  return await _requestGithub(prUrl)
+}
+
+const getGithubPullRequestChanges = async () => {
+  const repoId = process.env.BUILD_REPOSITORY_ID
+  const prNumber = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
+  const fileUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}/files`
+  return await _requestGithub(fileUrl)
+}
+
+const _requestGithub = async (url) => {
+  const githubPAT = getPipelineVar(VARIABLES.githubPAT)
   const opt = {}
   if (typeof (githubPAT) === 'string' && githubPAT.length > 0 && githubPAT.toLowerCase() !== DEFAULT_PAT_SECRET_VALUE.toLowerCase()) {
     const auth = Buffer.from(`:${githubPAT}`).toString('base64')
@@ -34,10 +43,10 @@ const getGithubPullRequestInfo = async () => {
     }
   }
   try {
-    const resp = await got(prUrl, opt).json()
+    const resp = await got(url, opt).json()
     return resp
   } catch (e) {
-    throw new Error(`HTTP Error when get ${prUrl}`)
+    throw new Error(`HTTP Error when get ${url}`)
   }
 }
 
@@ -106,11 +115,8 @@ const fileChangeCheck = async () => {
   const patterns = globs.split(',')
   console.log(`Glob patterns: ${globs}`)
 
-  const targetBranch = process.env.SYSTEM_PULLREQUEST_TARGETBRANCH
-  const git = simpleGit()
-  const summary = await git.diffSummary(`origin/${targetBranch}`)
-  const files = summary.files.map(x => x.file)
-
+  const resp = await getGithubPullRequestChanges()
+  const files = resp.map(x => x.filename)
   const result = multimatch(files, patterns)
   if (result.length > 0) {
     console.log('Following changes match provided patterns:')
