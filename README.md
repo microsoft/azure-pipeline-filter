@@ -45,8 +45,6 @@ Pipeline run should be triggerd by github pull request.
 
 Check if all modified files do **NOT** match the glob patterns provided by pipeline variable `filter.modified.globs`.
 
-File is compared (git diff -stat) between current commit and pr target branch.
-
 ### Pull Request Body Check
 
 The script will try to find the task list under the heading provided by pipeline variable `filter.prbody.heading` from the pull request markdown body.
@@ -57,7 +55,7 @@ If **ANY** selected options match provided index (`filter.prbody.optionIndex`) /
 
 ## Pipeline Variables
 
-### [PR body check] `filter.githubPAT`
+### `filter.githubPAT`
 
 Github personal access token used to access the pr body. Could be ignored if the repo is public.
 
