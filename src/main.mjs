@@ -5,6 +5,7 @@ import multimatch from 'multimatch'
 import { parsePullRequstBody } from './parsePullRequestBody.mjs'
 
 const SKIP_VARIABLE = 'skipsubsequent'
+const DEFAULT_PAT_SECRET_VALUE = '$(filter.githubPAT)'
 
 const VARIABLES = {
   githubPAT: 'filter.githubPAT',
@@ -26,14 +27,18 @@ const getGithubPullRequestInfo = async () => {
 
   const prUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}`
   const opt = {}
-  if (typeof (githubPAT) === 'string' && githubPAT.length > 0) {
+  if (typeof (githubPAT) === 'string' && githubPAT.length > 0 && githubPAT.toLowerCase() !== DEFAULT_PAT_SECRET_VALUE.toLowerCase()) {
     const auth = Buffer.from(`:${githubPAT}`).toString('base64')
     opt.headers = {
       Authorization: `Basic ${auth}`
     }
   }
-  const resp = await got(prUrl, opt).json()
-  return resp
+  try {
+    const resp = await got(prUrl, opt).json()
+    return resp
+  } catch (e) {
+    throw new Error(`HTTP Error when get ${prUrl}`)
+  }
 }
 
 const basicCheck = async () => {
