@@ -64,7 +64,7 @@ const prBodyCheck = async () => {
   console.log('[Pull Request Body]')
   const markdownHeading = getPipelineVar(VARIABLES.markdownHeading)
   console.log('Hint Heading:', markdownHeading)
-  if (typeof(markdownHeading) !== 'string' || markdownHeading.length == 0) {
+  if (typeof (markdownHeading) !== 'string' || markdownHeading.length === 0) {
     console.log('Hint heading not provided, skip')
     return false
   }
