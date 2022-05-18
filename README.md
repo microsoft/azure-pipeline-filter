@@ -57,7 +57,7 @@ If **ANY** selected options match provided index (`filter.prbody.optionIndex`) /
 
 ### `filter.githubPAT`
 
-Github personal access token used to access the pr body. Could be ignored if the repo is public.
+Github personal access token used to access the pull request info. Could be ignored if the repo is public.
 
 It should be a secret variable and need to be exposed to the script explicitly.
 
