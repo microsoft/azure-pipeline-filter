@@ -21,7 +21,7 @@ stages:
   jobs:
   - job: Check
     steps:
-    - checkout: azpfilter
+    #- checkout: azpfilter
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
