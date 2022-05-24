@@ -29,6 +29,10 @@ steps:
     timeout: '1800'
     ram: '16384'
     addProjectDirToScanningExclusionList: true
-
-
+- task: PublishSecurityAnalysisLogs@2
+  inputs:
+    ArtifactName: 'CodeAnalysisLogs'
+    ArtifactType: 'Container'
+    AllTools: true
+    ToolLogsNotFoundAction: 'Standard'
 
