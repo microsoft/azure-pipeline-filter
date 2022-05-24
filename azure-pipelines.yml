@@ -5,10 +5,10 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '16.x'
-  - script: npm ci
-    displayName: NPM Install
-  - script: npx standard
-    displayName: lint
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+- script: npm ci
+  displayName: NPM Install
+- script: npx standard
+  displayName: lint
