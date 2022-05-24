@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 import assert from 'node:assert/strict'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import { gfmTaskListItem } from 'micromark-extension-gfm-task-list-item'
