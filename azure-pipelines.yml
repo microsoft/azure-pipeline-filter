@@ -5,6 +5,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: CodeQL3000Init@0
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
@@ -12,3 +13,15 @@ steps:
   displayName: NPM Install
 - script: npx standard
   displayName: lint
+- task: CredScan@2
+  inputs: 
+    toolMajorVersion: 'V2'
+- task: ComponentGovernanceComponentDetection@0
+  inputs:
+    scanType: 'Register'
+    verbosity: 'Verbose'
+    alertWarningLevel: 'High'
+- task: CodeQL3000Finalize@0
+
+
+
