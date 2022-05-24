@@ -1,13 +1,10 @@
 trigger:
 - none
 
-variables:
-  Codeql.Enabled: true
 pool:
   vmImage: windows-latest
 
 steps:
-- task: CodeQL3000Init@0
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
@@ -23,7 +20,15 @@ steps:
     scanType: 'Register'
     verbosity: 'Verbose'
     alertWarningLevel: 'High'
-- task: CodeQL3000Finalize@0
+- task: Semmle@1
+  inputs:
+    sourceCodeDirectory: '$(Build.SourcesDirectory)'
+    language: 'javascript'
+    includeNodeModules: true
+    querySuite: 'Recommended'
+    timeout: '1800'
+    ram: '16384'
+    addProjectDirToScanningExclusionList: true
 
 
 
