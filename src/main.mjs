@@ -52,23 +52,23 @@ const _requestGithub = async (url) => {
   }
 }
 
-const basicCheck = async () => {
+const isTriggeredByGithubPR = () => {
   console.log('[Basic Check]')
   const repoProvider = process.env.BUILD_REPOSITORY_PROVIDER
   console.log('Repo Provider:', repoProvider)
   if (repoProvider !== 'GitHub') {
     console.log(`Invalid repo provider ${repoProvider}, run following tests by default.`)
-    return true
+    return false
   }
 
   const buildReason = process.env.BUILD_REASON
   console.log('Build Reason:', buildReason)
   if (buildReason !== 'PullRequest') {
     console.log('Not triggered by pull request, run following tests by default.')
-    return true
+    return false
   }
 
-  return false
+  return true
 }
 
 const prBodyCheck = async () => {
@@ -139,17 +139,19 @@ const setOutputVariable = (key, value) => {
 }
 
 const main = async () => {
-  const checks = [
-    basicCheck,
-    fileChangeCheck,
-    prBodyCheck
-  ]
-  for (const check of checks) {
-    const res = await check()
-    if (res) {
-      setOutputVariable(SKIP_VARIABLE, false)
-      return
-    }
+  if (!isTriggeredByGithubPR()) {
+    setOutputVariable(SKIP_VARIABLE, false)
+    return
+  }
+
+  if (await fileChangeCheck()) {
+    setOutputVariable(SKIP_VARIABLE, false)
+    return
+  }
+
+  if (await prBodyCheck()) {
+    setOutputVariable(SKIP_VARIABLE, false)
+    return
   }
 
   setOutputVariable(SKIP_VARIABLE, true)

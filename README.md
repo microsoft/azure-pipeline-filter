@@ -4,7 +4,7 @@ Tools for conditional azure pipeline execution. Currently only supports run trig
 
 ## Usage
 
-The script `src/index.js` will check if current pipeline run matches following patterns. If **ANY** following checks failed, the output pipeline variable `skipsubsequent` variable will be set to **false**. Otherwise it will be set to **true**.
+The script `src/index.js` will check if current pipeline run passes following checks and the output pipeline variable `skipsubsequent` will be set to True or False according to checks' results.
 
 The script should be put in a seperated job / stage and following jobs / stages could use the output variable to judge if it should be skipped.
 
@@ -39,19 +39,27 @@ stages:
 
 ### Basic Check
 
-Pipeline run should be triggerd by github pull request.
+If pipeline run is not triggered by github pull request, `skipsubsequent` will be set to **False**, and the script will exit.
+
+Otherwise, run following checks.
 
 ### Modified Files Check
 
-Check if all modified files do **NOT** match the glob patterns provided by pipeline variable `filter.modified.globs`.
+Check if any modified files matches the glob patterns provided by pipeline variable `filter.modified.globs`.
+
+If true, `skipsubsequent` will be set to **False**, and the script will exit.
+
+Otherwise, run following checks.
 
 ### Pull Request Body Check
 
 The script will try to find the task list under the heading provided by pipeline variable `filter.prbody.heading` from the pull request markdown body.
 
-If the task list is not found, continue (skip).
+If the task list is not found, `skipsubsequent` will be set to **True**.
 
-If **ANY** selected options match provided index (`filter.prbody.optionIndex`) / value (`filter.prbody.optionValue`), run following tests.
+If **ANY** selected options match provided index (`filter.prbody.optionIndex`) / value (`filter.prbody.optionValue`), `skipsubsequent` will be set to **False**.
+
+Otherwise, `skipsubsequent` will be set to **True**.
 
 ## Pipeline Variables
 
