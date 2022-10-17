@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import got from 'got'
@@ -57,14 +58,14 @@ const isTriggeredByGithubPR = () => {
   const repoProvider = process.env.BUILD_REPOSITORY_PROVIDER
   console.log('Repo Provider:', repoProvider)
   if (repoProvider !== 'GitHub') {
-    console.log(`Invalid repo provider ${repoProvider}, run following tests by default.`)
+    console.log(`Invalid repo provider ${repoProvider}, run following tests.`)
     return false
   }
 
   const buildReason = process.env.BUILD_REASON
   console.log('Build Reason:', buildReason)
   if (buildReason !== 'PullRequest') {
-    console.log('Not triggered by pull request, run following tests by default.')
+    console.log('Not triggered by pull request, run following tests.')
     return false
   }
 
