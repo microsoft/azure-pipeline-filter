@@ -5,19 +5,19 @@ import assert from 'node:assert/strict'
 import nock from 'nock'
 import { stdout } from 'test-console'
 
-import { main, ENV_VARS } from "../src/core.mjs"
-import { set_env, nock_init, REPO_ID, PR_NUMBER, MARKDOWN_HEADING } from "./utils.mjs"
+import { main, ENV_VARS } from '../src/core.mjs'
+import { setEnv, nockInit, REPO_ID, PR_NUMBER, MARKDOWN_HEADING } from './utils.mjs'
 
-const parse_output = (output_list) => {
-  for (const line of output_list) {
+const parseOutput = (outputLines) => {
+  for (const line of outputLines) {
     console.log(line.trimEnd())
   }
-  const vso_output_str = output_list.find(x=>x.startsWith('##vso'))
-  assert(vso_output_str)
-  const match_res = /##vso\[.*?\](.*?)$/.exec(vso_output_str.trim())
-  assert(match_res.length === 2)
-  assert(match_res[1] === 'true' || match_res[1] === 'false')
-  return match_res[1] === 'true'
+  const vsoLine = outputLines.find(x => x.startsWith('##vso'))
+  assert(vsoLine)
+  const matchResult = /##vso\[.*?\](.*?)$/.exec(vsoLine.trim())
+  assert(matchResult.length === 2)
+  assert(matchResult[1] === 'true' || matchResult[1] === 'false')
+  return matchResult[1] === 'true'
 }
 
 describe('Smoke test', () => {
@@ -37,48 +37,47 @@ describe('Smoke test', () => {
   })
 
   it('changed files (continue)', async () => {
-    set_env(ENV_VARS.fileChangeGlobs, 'a/**/x.py')
-    nock_init({opt0: false, opt1: false}, ['a/b/c/d/x.py'])
+    setEnv(ENV_VARS.fileChangeGlobs, 'a/**/x.py')
+    nockInit({ opt0: false, opt1: false }, ['a/b/c/d/x.py'])
     const inspect = stdout.inspect()
     await main()
     inspect.restore()
-    const res = parse_output(inspect.output)
+    const res = parseOutput(inspect.output)
     // skip == false
     assert(!res)
   })
 
   it('changed files (skip)', async () => {
-    set_env(ENV_VARS.fileChangeGlobs, 'a/**/x.py')
-    nock_init({opt0: false, opt1: false}, ['b/c/d/x.py'])
+    setEnv(ENV_VARS.fileChangeGlobs, 'a/**/x.py')
+    nockInit({ opt0: false, opt1: false }, ['b/c/d/x.py'])
     const inspect = stdout.inspect()
     await main()
     inspect.restore()
-    const res = parse_output(inspect.output)
+    const res = parseOutput(inspect.output)
     // skip == true
     assert(res)
   })
 
   it('pull request body (selected)', async () => {
-    set_env(ENV_VARS.markdownHeading, MARKDOWN_HEADING)
-    set_env(ENV_VARS.markdownOptionValue, 'opt1')
-    nock_init({opt0: false, opt1: true}, ['a/b/c/d/x.py'])
+    setEnv(ENV_VARS.markdownHeading, MARKDOWN_HEADING)
+    setEnv(ENV_VARS.markdownOptionValue, 'opt1')
+    nockInit({ opt0: false, opt1: true }, ['a/b/c/d/x.py'])
     const inspect = stdout.inspect()
     await main()
     inspect.restore()
-    const res = parse_output(inspect.output)
+    const res = parseOutput(inspect.output)
     // skip == false
     assert(!res)
-
   })
 
   it('pull request body (not selected)', async () => {
-    set_env(ENV_VARS.markdownHeading, MARKDOWN_HEADING)
-    set_env(ENV_VARS.markdownOptionValue, 'opt1')
-    nock_init({opt0: false, opt1: false}, ['a/b/c/d/x.py'])
+    setEnv(ENV_VARS.markdownHeading, MARKDOWN_HEADING)
+    setEnv(ENV_VARS.markdownOptionValue, 'opt1')
+    nockInit({ opt0: false, opt1: false }, ['a/b/c/d/x.py'])
     const inspect = stdout.inspect()
     await main()
     inspect.restore()
-    const res = parse_output(inspect.output)
+    const res = parseOutput(inspect.output)
     // skip == true
     assert(res)
   })

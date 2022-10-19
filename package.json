@@ -10,7 +10,8 @@
     "node": ">=13.2.0"
   },
   "scripts": {
-    "test": "mocha tests/unit/*.mjs tests/smoke.mjs"
+    "test": "mocha tests/unit/*.mjs tests/smoke.mjs",
+    "lint": "standard src/ && standard --env mocha tests/"
   },
   "dependencies": {
     "got": "^12.1.0",

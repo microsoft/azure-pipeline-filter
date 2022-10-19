@@ -3,7 +3,7 @@
 
 import assert from 'node:assert/strict'
 
-import { isTriggeredByGithubPR } from "../../src/core.mjs"
+import { isTriggeredByGithubPR } from '../../src/core.mjs'
 
 describe('Trigger check', () => {
   let envCache

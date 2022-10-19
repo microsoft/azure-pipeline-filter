@@ -7,25 +7,25 @@ const REPO_ID = 'microsoft/azure-pipeline-filter'
 const PR_NUMBER = 3
 const MARKDOWN_HEADING = '#### Test Options'
 
-const set_env = (key, val) => {
+const setEnv = (key, val) => {
   key = key.replaceAll('.', '_').toUpperCase()
   process.env[key] = val
 }
 
-const nock_init = (options, changed_files) => {
+const nockInit = (options, changedFiles) => {
   options = options || {}
 
-  let text_options = Object.entries(options).map(([key, val]) => `- [${val ? 'x' : ' '}] ${key}\r\n`)
-  text_options = text_options.join('')
+  let textOptions = Object.entries(options).map(([key, val]) => `- [${val ? 'x' : ' '}] ${key}\r\n`)
+  textOptions = textOptions.join('')
   nock('https://api.github.com')
     .get(`/repos/${REPO_ID}/pulls/${PR_NUMBER}`)
-    .reply(200, {body: `# Test Template\r\n\r\n${MARKDOWN_HEADING}\r\n\r\n${text_options}`})
+    .reply(200, { body: `# Test Template\r\n\r\n${MARKDOWN_HEADING}\r\n\r\n${textOptions}` })
 
-  changed_files = changed_files || []
+  changedFiles = changedFiles || []
 
   nock('https://api.github.com')
     .get(`/repos/${REPO_ID}/pulls/${PR_NUMBER}/files`)
-    .reply(200, changed_files.map(x => ({ filename: x })))
+    .reply(200, changedFiles.map(x => ({ filename: x })))
 }
 
-export { set_env, nock_init, REPO_ID, PR_NUMBER, MARKDOWN_HEADING }
+export { setEnv, nockInit, REPO_ID, PR_NUMBER, MARKDOWN_HEADING }
