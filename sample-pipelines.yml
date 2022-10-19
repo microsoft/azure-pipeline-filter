@@ -1,13 +1,6 @@
 trigger:
 - none
 
-resources:
-  repositories:
-    - repository: azpfilter
-      type: github
-      name: microsoft/azure-pipeline-filter
-      endpoint: githubConnection
-
 pool:
   vmImage: ubuntu-latest
 
@@ -21,13 +14,12 @@ stages:
   jobs:
   - job: Check
     steps:
-    - checkout: azpfilter
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
-    - script: npm ci
-      displayName: NPM Install
-    - script: node src/main.mjs
+    - script: npm install npm@latest -g
+      displayName: Update npm to use npx with github url
+    - script: npx github:microsoft/azure-pipeline-filter
       env:
         FILTER_GITHUBPAT: $(filter.githubPAT)
       name: execution
