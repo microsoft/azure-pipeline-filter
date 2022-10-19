@@ -42,8 +42,12 @@ const parsePullRequstBody = (doc, hintHeading) => {
   const listNode = tree.children[targetIdx + 1]
   assert.equal(listNode.type, 'list')
 
-  const selectedItems = listNode.children.filter(x => x.checked)
-  return selectedItems.map((x, idx) => [findFirstValue(x), idx])
+  const selectedItems = listNode.children.map((x, idx) => ({
+    value: findFirstValue(x),
+    idx: idx,
+    checked: x.checked
+  }))
+  return selectedItems.filter(x => x.checked).map(x => [x.value, x.idx])
 }
 
 export { parsePullRequstBody }
