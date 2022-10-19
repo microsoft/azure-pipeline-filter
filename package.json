@@ -4,10 +4,13 @@
   "description": "Tools for conditional azure pipeline execution",
   "license": "MIT",
   "author": "Qinzheng Sun <qinsu@microsoft.com>",
-  "bin": "src/main.mjs",
+  "bin": "src/cli.mjs",
   "repository": "github:microsoft/azure-pipeline-filter",
   "engines": {
     "node": ">=13.2.0"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/*.mjs tests/smoke.mjs"
   },
   "dependencies": {
     "got": "^12.1.0",
@@ -17,6 +20,9 @@
     "multimatch": "^6.0.0"
   },
   "devDependencies": {
-    "standard": "^16.0.4"
+    "mocha": "^10.1.0",
+    "nock": "^13.2.9",
+    "standard": "^16.0.4",
+    "test-console": "^2.0.0"
   }
 }

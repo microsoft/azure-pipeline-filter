@@ -4,7 +4,7 @@ Tools for conditional azure pipeline execution. Currently only supports run trig
 
 ## Usage
 
-The script `src/index.js` will check if current pipeline run passes following checks and the output pipeline variable `skipsubsequent` will be set to True or False according to checks' results.
+The script `src/cli.js` will check if current pipeline run passes following checks and the output pipeline variable `skipsubsequent` will be set to True or False according to checks' results.
 
 The script should be put in a seperated job / stage and following jobs / stages could use the output variable to judge if it should be skipped.
 
