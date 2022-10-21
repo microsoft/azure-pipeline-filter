@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import got from 'got'
@@ -9,7 +8,7 @@ import { parsePullRequstBody } from './parsePullRequestBody.mjs'
 const SKIP_VARIABLE = 'skipsubsequent'
 const DEFAULT_PAT_SECRET_VALUE = '$(filter.githubPAT)'
 
-const VARIABLES = {
+const ENV_VARS = {
   githubPAT: 'filter.githubPAT',
   markdownHeading: 'filter.prbody.heading',
   markdownOptionIndex: 'filter.prbody.optionIndex',
@@ -37,7 +36,7 @@ const getGithubPullRequestChanges = async () => {
 }
 
 const _requestGithub = async (url) => {
-  const githubPAT = getPipelineVar(VARIABLES.githubPAT)
+  const githubPAT = getPipelineVar(ENV_VARS.githubPAT)
   const opt = {}
   if (typeof (githubPAT) === 'string' && githubPAT.length > 0 && githubPAT.toLowerCase() !== DEFAULT_PAT_SECRET_VALUE.toLowerCase()) {
     const auth = Buffer.from(`:${githubPAT}`).toString('base64')
@@ -74,7 +73,7 @@ const isTriggeredByGithubPR = () => {
 
 const prBodyCheck = async () => {
   console.log('[Pull Request Body]')
-  const markdownHeading = getPipelineVar(VARIABLES.markdownHeading)
+  const markdownHeading = getPipelineVar(ENV_VARS.markdownHeading)
   console.log('Hint Heading:', markdownHeading)
   if (typeof (markdownHeading) !== 'string' || markdownHeading.length === 0) {
     console.log('Hint heading not provided, skip')
@@ -92,8 +91,8 @@ const prBodyCheck = async () => {
     return false
   }
 
-  const optIdx = parseInt(getPipelineVar(VARIABLES.markdownOptionIndex), '10')
-  const optValue = getPipelineVar(VARIABLES.markdownOptionValue)
+  const optIdx = parseInt(getPipelineVar(ENV_VARS.markdownOptionIndex), '10')
+  const optValue = getPipelineVar(ENV_VARS.markdownOptionValue)
   console.log(`Target Option Index: ${optIdx}`)
   console.log(`Target Option Value: ${optValue}`)
 
@@ -110,7 +109,7 @@ const prBodyCheck = async () => {
 
 const fileChangeCheck = async () => {
   console.log('[File Changes]')
-  const globs = getPipelineVar(VARIABLES.fileChangeGlobs)
+  const globs = getPipelineVar(ENV_VARS.fileChangeGlobs)
   if (typeof (globs) !== 'string' || globs.length === 0) {
     console.log('Glob pattern not provided, skip')
     return false
@@ -157,4 +156,5 @@ const main = async () => {
 
   setOutputVariable(SKIP_VARIABLE, true)
 }
-main()
+
+export { isTriggeredByGithubPR, fileChangeCheck, prBodyCheck, setOutputVariable, SKIP_VARIABLE, ENV_VARS, main }

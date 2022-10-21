@@ -1,0 +1,22 @@
+trigger:
+- none
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+- script: npm ci
+- script: npm run lint
+- script: npm run test
+- task: CredScan@2
+  inputs: 
+    toolMajorVersion: 'V2'
+- task: ComponentGovernanceComponentDetection@0
+  inputs:
+    scanType: 'Register'
+    verbosity: 'Verbose'
+    alertWarningLevel: 'High'
+

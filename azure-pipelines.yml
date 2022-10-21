@@ -12,8 +12,6 @@ steps:
     versionSpec: '16.x'
 - script: npm ci
   displayName: NPM Install
-- script: npx standard
-  displayName: lint
 - task: CredScan@2
   inputs: 
     toolMajorVersion: 'V2'

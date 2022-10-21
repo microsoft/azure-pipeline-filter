@@ -4,7 +4,7 @@ Tools for conditional azure pipeline execution. Currently only supports run trig
 
 ## Usage
 
-The script `src/index.js` will check if current pipeline run passes following checks and the output pipeline variable `skipsubsequent` will be set to True or False according to checks' results.
+The script `src/cli.mjs` (could be invoked with npx) will check if current pipeline run passes following checks and the output pipeline variable `skipsubsequent` will be set to True or False according to checks' results.
 
 The script should be put in a seperated job / stage and following jobs / stages could use the output variable to judge if it should be skipped.
 
@@ -17,9 +17,9 @@ stages:
     - task: NodeTool@0
       inputs:
         versionSpec: '16.x'
-    - script: npm ci
-      displayName: NPM Install
-    - script: node src/main.mjs
+    - script: npm install npm@latest -g
+      displayName: Update npm to use npx with github url
+    - script: npx github:microsoft/azure-pipeline-filter
       env:
         FILTER_GITHUBPAT: $(filter.githubPAT)
       name: execution
