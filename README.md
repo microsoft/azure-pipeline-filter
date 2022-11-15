@@ -47,6 +47,8 @@ Otherwise, run following checks.
 
 Check if any modified files matches the glob patterns provided by pipeline variable `filter.modified.globs`.
 
+*Due to github rest api's limitation, `skipsubsequent` will be set to **False** when changed file count > 3000*
+
 If true, `skipsubsequent` will be set to **False**, and the script will exit.
 
 Otherwise, run following checks.
