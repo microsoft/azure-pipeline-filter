@@ -25,6 +25,7 @@ describe('Smoke test', () => {
   beforeEach(() => {
     envCache = process.env
     process.env = {}
+    process.env.NODE_ENV = 'test'
     process.env.BUILD_REPOSITORY_ID = REPO_ID
     process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER = PR_NUMBER
     process.env.BUILD_REPOSITORY_PROVIDER = 'GitHub'

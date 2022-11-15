@@ -21,18 +21,31 @@ const getPipelineVar = (pipelineVar) => {
   return process.env[key]
 }
 
+let prInfoCache = null
 const getGithubPullRequestInfo = async () => {
+  if (prInfoCache != null && process.env.NODE_ENV !== 'test') {
+    return prInfoCache
+  }
   const repoId = process.env.BUILD_REPOSITORY_ID
   const prNumber = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
   const prUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}`
-  return await _requestGithub(prUrl)
+  prInfoCache = await _requestGithub(prUrl)
+  return prInfoCache
 }
 
-const getGithubPullRequestChanges = async () => {
+const getGithubPullRequestChanges = async (numFiles) => {
   const repoId = process.env.BUILD_REPOSITORY_ID
   const prNumber = process.env.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
-  const fileUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}/files`
-  return await _requestGithub(fileUrl)
+
+  const pages = Math.ceil(numFiles / 100)
+  const results = []
+  // page starts from 1
+  for (let page = 1; page <= pages; page += 1) {
+    const fileUrl = `https://api.github.com/repos/${repoId}/pulls/${prNumber}/files?per_page=100&page=${page}`
+    const response = await _requestGithub(fileUrl)
+    results.push(...response)
+  }
+  return results
 }
 
 const _requestGithub = async (url) => {
@@ -116,8 +129,15 @@ const fileChangeCheck = async () => {
   }
   const patterns = globs.split(',')
   console.log(`Glob patterns: ${globs}`)
-
-  const resp = await getGithubPullRequestChanges()
+  // get changed files
+  const prInfo = await getGithubPullRequestInfo()
+  const numFiles = parseInt(prInfo.changed_files, 10)
+  console.log(`Changed files: ${numFiles}`)
+  if (numFiles >= 3000) {
+    console.log('Changed files > 3000, run following tests')
+    return true
+  }
+  const resp = await getGithubPullRequestChanges(numFiles)
   const files = resp.map(x => x.filename)
   const result = multimatch(files, patterns)
   if (result.length > 0) {
