@@ -21,7 +21,7 @@
     "multimatch": "^6.0.0"
   },
   "devDependencies": {
-    "mocha": "^10.1.0",
+    "mocha": "^10.8.2",
     "nock": "^13.2.9",
     "standard": "^16.0.4",
     "test-console": "^2.0.0"
